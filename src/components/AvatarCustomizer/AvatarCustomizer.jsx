@@ -11,38 +11,25 @@ import './avatarCustomizer.scss';
 
 const URL_IMG = 'https://avataaars.io/';
 
-const AvatarCustomizer = forwardRef(({ initIndexes, hideOptions }, ref) => {
-    const [indexes, setIndexes] = useState(initIndexes || {});
-    const [topType, setTopType] = useState('LongHairMiaWallace');
-    const [eyeType, setEyeType] = useState('Happy');
-    const [hairColor, setHairColor] = useState('BrownDark');
-    const [mouthType, setMouthType] = useState('Smile');
-    const [skinColor, setSkinColor] = useState('Light');
-    const [clotheType, setClotheType] = useState('Hoodie');
-    const [avatarStyle, setAvatarStyle] = useState('Circle');
-    const [clotheColor, setClotheColor] = useState('PastelBlue');
-    const [eyebrowType, setEyebrowType] = useState('Default');
-    const [facialHairType, setFacialHairType] = useState('Blank');
-    const [accessoriesType, setAccessoriesType] = useState('Prescription02');
-
-    const selectors = {
-        topType: [topType, setTopType],
-        eyeType: [eyeType, setEyeType],
-        hairColor: [hairColor, setHairColor],
-        mouthType: [mouthType, setMouthType],
-        skinColor: [skinColor, setSkinColor],
-        clotheType: [clotheType, setClotheType],
-        clotheColor: [clotheColor, setClotheColor],
-        eyebrowType: [eyebrowType, setEyebrowType],
-        avatarStyle: [avatarStyle, setAvatarStyle],
-        facialHairType: [facialHairType, setFacialHairType],
-        accessoriesType: [accessoriesType, setAccessoriesType],
-    };
+const AvatarCustomizer = forwardRef(({ avatar, hideOptions, onChange }, ref) => {
+    const [indexes, setIndexes] = useState(avatar || {});
+    const [avatarSelectors, setAvatarSelectors] = useState({
+        topType: 'LongHairMiaWallace',
+        eyeType: 'Happy',
+        hairColor: 'BrownDark',
+        mouthType: 'Smile',
+        skinColor: 'Light',
+        clotheType: 'Hoodie',
+        clotheColor: 'PastelBlue',
+        eyebrowType: 'Default',
+        facialHairType: 'Blank',
+        accessoriesType: 'Prescription02',
+    });
 
     useEffect(() => {
         if (indexesAreEmpty()) {
             const obj = {};
-            Object.keys(selectors).forEach((key) => (obj[key] = 0));
+            Object.keys(avatarSelectors).forEach((key) => (obj[key] = 0));
             setIndexes(obj);
         } else {
             initSelectedIndexes();
@@ -55,19 +42,21 @@ const AvatarCustomizer = forwardRef(({ initIndexes, hideOptions }, ref) => {
         for (const key of Object.keys(indexes)) {
             const index = indexes[key];
             const selected = options[key][index];
-            selectors[key][1](selected);
+            setAvatarSelectors({ ...avatarSelectors, [key]: selected });
         }
     };
 
     const handleChangeOption = (selector, plus) => {
-        const [_, setState] = selectors[selector];
         const index = indexes[selector];
         const maxIndex = options[selector].length;
         let newIndex = parseInt((index + plus) % maxIndex);
         if (newIndex < 0) newIndex = maxIndex - 1;
         indexes[selector] = newIndex;
         setIndexes(indexes);
-        setState(options[selector][newIndex]);
+        setAvatarSelectors({ ...avatarSelectors, [selector]: options[selector][newIndex] })
+        if (onChange) {
+            onChange(indexes);
+        }
     };
 
     const generateRandomly = () => {
@@ -76,7 +65,7 @@ const AvatarCustomizer = forwardRef(({ initIndexes, hideOptions }, ref) => {
             const maxLength = options[key].length;
             const randomIndex = parseInt(Math.random() * maxLength);
             const randomItem = options[key][randomIndex];
-            selectors[key][1](randomItem);
+            setAvatarSelectors({ ...avatarSelectors, [key]: randomItem })
             indexes[key] = randomIndex;
         }
     };
@@ -93,9 +82,9 @@ const AvatarCustomizer = forwardRef(({ initIndexes, hideOptions }, ref) => {
 
     const getUrlImage = () => {
         let url = URL_IMG + '?';
-        Object.keys(selectors).forEach((key, index) => {
-            url += `${key}=${selectors[key][0]}`;
-            if (index < Object.keys(selectors).length - 1) url += '&';
+        Object.keys(avatarSelectors).forEach((key, index) => {
+            url += `${key}=${avatarSelectors[key]}`;
+            if (index < Object.keys(avatarSelectors).length - 1) url += '&';
         });
         return url;
     };
@@ -105,23 +94,23 @@ const AvatarCustomizer = forwardRef(({ initIndexes, hideOptions }, ref) => {
             <div className="avatar">
                 <Avatar
                     style={{ width: '100%', height: '100%' }}
-                    avatarStyle={avatarStyle}
-                    topType={topType}
-                    accessoriesType={accessoriesType}
-                    hairColor={hairColor}
-                    facialHairType={facialHairType}
-                    clotheType={clotheType}
-                    clotheColor={clotheColor}
-                    eyeType={eyeType}
-                    eyebrowType={eyebrowType}
-                    mouthType={mouthType}
-                    skinColor={skinColor}
+                    avatarStyle={avatarSelectors['avatarStyle']}
+                    topType={avatarSelectors['topType']}
+                    accessoriesType={avatarSelectors['accessoriesType']}
+                    hairColor={avatarSelectors['hairColor']}
+                    facialHairType={avatarSelectors['facialHairType']}
+                    clotheType={avatarSelectors['clotheType']}
+                    clotheColor={avatarSelectors['clotheColor']}
+                    eyeType={avatarSelectors['eyeType']}
+                    eyebrowType={avatarSelectors['eyebrowType']}
+                    mouthType={avatarSelectors['mouthType']}
+                    skinColor={avatarSelectors['skinColor']}
                 />
             </div>
             {hideOptions ? null : (
                 <div className="wrapAvatarCustomizer">
                     <AvatarOptions
-                        selectors={selectors}
+                        selectors={avatarSelectors}
                         handleChangeOption={handleChangeOption}
                     />
                 </div>

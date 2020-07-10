@@ -33,7 +33,6 @@ const titles = [
     '👔 Ropa',
     '🎨 Color de la ropa',
     '✏️ Cejas',
-    null,
     '✂️ Barba',
     '👓 Gafas',
 ];
