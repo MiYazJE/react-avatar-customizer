@@ -94,7 +94,7 @@ const AvatarCustomizer = forwardRef(({ avatar, hideOptions, onChange }, ref) => 
             <div className="avatar">
                 <Avatar
                     style={{ width: '100%', height: '100%' }}
-                    avatarStyle={avatarSelectors['avatarStyle']}
+                    avatarStyle="Circle"
                     topType={avatarSelectors['topType']}
                     accessoriesType={avatarSelectors['accessoriesType']}
                     hairColor={avatarSelectors['hairColor']}
