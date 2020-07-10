@@ -40,16 +40,14 @@ const titles = [
 const AvatarOptions = ({ selectors, handleChangeOption }) => {
     return (
         <div className="wrapAvatarOptions">
-            {Object.keys(selectors).map((selector, index) =>
-                selector === 'avatarStyle' ? null : (
-                    <AvatarOption
-                        key={selector}
-                        selector={selector}
-                        changeOption={handleChangeOption}
-                        title={titles[index]}
-                    />
-                )
-            )}
+            {Object.keys(selectors).map((selector, index) => (
+                <AvatarOption
+                    key={selector}
+                    selector={selector}
+                    changeOption={handleChangeOption}
+                    title={titles[index]}
+                />
+            ))}
         </div>
     );
 };

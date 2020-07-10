@@ -1,0 +1,9 @@
+.options {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+button:not(:first-child) {
+    margin-left: 5px;
+}
